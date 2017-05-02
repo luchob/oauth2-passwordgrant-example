@@ -1,0 +1,9 @@
+clientdetails:
+    clientId: foo
+    authorizedGrantTypes: refresh_token, password
+    scope: read, write
+    accessTokenValiditySeconds: 1800
+    
+logging:
+  level:
+    org.springframework.security: DEBUG
