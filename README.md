@@ -1,6 +1,6 @@
 # Introduction
 
-This gradle multiproject demonstrates a very minimalistic REST API, access to which is controlled with OAuth 2.0. The project consists of two independent applications which communicate over HTTP:
+This gradle multiproject demonstrates a very minimalistic REST API, access to which is controlled with OAuth 2.0. The project consists of two independent spring-boot applications which communicate over HTTP:
 
 * An authorization server - it generates and verifies authentication tokens for users that attempt to access a REST resource. The user data is stored in H2 database currently. This may be easily adopted to PostgreSQL, MySQL or other relational DB. The token storage is in-memory.
 * Resource server - serves REST resources protected by access tokens.
@@ -13,10 +13,11 @@ To test the samples the authorization and resource servers should be started in 
 
 ## Starting and using the authorization server
 
-Navigate to the project root, e.g. `springboot-oauth2-example` and execute `gradlew :auth:bootRun`. The auth server should be up and running at [http://localhost:8080](http://localhost:8080) by default. A REST client like Postman can be used for testing. The server is shipped with two demo users:
+Navigate to the project root, e.g. `oauth2-passwordgrant-example` and execute `gradlew :auth:bootRun`. The auth server should be up and running at [http://localhost:8080](http://localhost:8080) by default. A REST client like Postman can be used for testing. The server is shipped with two demo users:
 
 * user `user1` with password `password1`, the user account is not locked;
 * user `user2` with password `password2`, the user account is locked;
+* a trusted client with id `foo` which can access grant access to user data;
 
 The endpoint for retrieving access tokens via POST request is [http://localhost:8080/oauth/token](http://localhost:8080/oauth/token). 
 
@@ -28,6 +29,7 @@ The following parameters should be supplied:
 grant_type=password
 username=user1
 password=password1
+client_id=foo
 ```
 
 A sample response would be:
@@ -64,6 +66,7 @@ The following parameters should be supplied:
 grant_type=password
 username=user2
 password=password2
+client_id=foo
 ```
 
 A sample response would be:
@@ -83,6 +86,7 @@ The following parameters may be supplied:
 grant_type=password
 username=luchob
 password=top_secret
+client_id=foo
 ```
 
 A sample response would be:
@@ -96,7 +100,7 @@ A sample response would be:
 
 ## Starting and using the resource server
 
-Navigate to the project root, e.g. `springboot-oauth2-example` and execute `gradlew :res:bootRun`. The resource server should be up and running at [http://localhost:9999](http://localhost:9999). A REST client like Postman can be used for testing. 
+Navigate to the project root, e.g. `oauth2-passwordgrant-example` and execute `gradlew :res:bootRun`. The resource server should be up and running at [http://localhost:9999](http://localhost:9999). A REST client like Postman can be used for testing. 
 
 ### Getting a resource without token
 
@@ -132,15 +136,10 @@ The Eclipse plugin for gradle is enabled in the build. To import the projects in
 * Execute `gradlew eclipse`
 * Open your Eclipse IDE and import the projects as existing Java projects
 
-# TODO-s
+# Conclusion
 
-There are many TODO-s for this sample:
+This implementation idea does not seem to be suitable for production environments because:
 
-* Account locking;
-* Configurable client details;
-* Persistent token storage;
-* Permission management;
-* Better docs;
-* etc;
-
-Stay tuned.
+* The end point for token generation should be protected with basic authentication which is not the case currently;
+* It seems that this leads to a situation in which the token check endpoint should be left unprotected. Currently I'm not sure if this is an issue or not;
+* RemoteTokenServices for checking the access tokens won't work with unprotected token check endpoint;
