@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
-import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -30,32 +29,34 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	@Autowired
 	@Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
-
+	
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 			throws Exception {
-		endpoints.authenticationManager(this.authenticationManager);
+		endpoints.
+			authenticationManager(this.authenticationManager);
 	}
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients)
 			throws Exception {
-
-		ClientDetails clientDetails = getClientDetails();
-		ClientDetailsServiceBuilder<InMemoryClientDetailsServiceBuilder> serviceBuilder = new InMemoryClientDetailsServiceBuilder()
-		{
-			public ClientDetailsServiceBuilder<InMemoryClientDetailsServiceBuilder> addClientDetails(String clientId, ClientDetails value) {
-				super.addClient(clientId, value);
-				return this;
-			}
-		}.addClientDetails(clientDetails.getClientId(), clientDetails);
 		
-		clients.setBuilder(serviceBuilder);	
+		ClientDetails clientDetails = getClientDetails();
+		
+		clients.
+			setBuilder(inMemory(clientDetails));	
+	}
+	
+	private ClientDetailsServiceBuilder<?> inMemory(ClientDetails clients)
+	{
+		InMemoryClientDetailsServiceBuilder builder = new InMemoryClientDetailsServiceBuilder();
+		builder.addClient(clients);
+		return builder;
 	}
 	
 	@Bean
     @ConfigurationProperties("clientdetails")
-	BaseClientDetails getClientDetails()
+	ClientDetails getClientDetails()
 	{
 		return new BaseClientDetails();
 	}
@@ -64,8 +65,7 @@ class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 	public void configure(AuthorizationServerSecurityConfigurer oauthServer)
 			throws Exception {
 		oauthServer.
-			checkTokenAccess("permitAll()").
-			allowFormAuthenticationForClients();
+			checkTokenAccess("isAuthenticated()");
 	}
 
 }

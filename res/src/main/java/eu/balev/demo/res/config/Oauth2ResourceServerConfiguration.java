@@ -8,22 +8,28 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 
 @Configuration
 @EnableWebSecurity
 @EnableResourceServer
-public class Oauth2ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
-	
+public class Oauth2ResourceServerConfiguration extends
+		ResourceServerConfigurerAdapter {
+
 	@Override
-    public void configure(HttpSecurity http) throws Exception {
-         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/books/**").access("#oauth2.hasScope('read')");
-    }
+	public void configure(HttpSecurity http) throws Exception {
 
-    @Bean
-    @ConfigurationProperties("tokenservice")
-    public OpenRemoteServices tokenService() {     
-    	return new OpenRemoteServices();
-    }
+		//@formatter:off
+		http.
+			authorizeRequests().
+			antMatchers(HttpMethod.GET, "/books/**").
+			access("#oauth2.hasScope('read')");
+		//@formatter:on
+	}
 
+	@Bean
+	@ConfigurationProperties("tokenservice")
+	RemoteTokenServices remoteTokenServices() {
+		return new RemoteTokenServices();
+	}
 }

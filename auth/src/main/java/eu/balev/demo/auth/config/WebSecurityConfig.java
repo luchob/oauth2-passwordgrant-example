@@ -24,7 +24,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder authManagerBuilder)
 			throws Exception {
-		authManagerBuilder.userDetailsService(userDetailsService)
+		//Registers our user details service and the password encoder
+		authManagerBuilder
+				.userDetailsService(userDetailsService)
 				.passwordEncoder(new BCryptPasswordEncoder());
 	}
 	
@@ -37,17 +39,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.
-			authorizeRequests().
-			anyRequest().
-			authenticated(); 
-
 		// this is just for the H2 DB and testing purposes
 		// TODO: should be disabled in real app
 		http.
-			authorizeRequests().antMatchers("/h2-console/**").permitAll().
+			authorizeRequests().antMatchers("/h2-console/**").permitAll().//h2 console
 			and().
-			authorizeRequests().antMatchers("/**").authenticated();
+			authorizeRequests().anyRequest().authenticated();//the rest
 		
 		http.csrf().ignoringAntMatchers("/h2-console/**");
 		http.headers().frameOptions().disable();

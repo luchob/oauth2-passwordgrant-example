@@ -8,8 +8,6 @@ dependencies {
 
 	//H2 in memory
 	compile("com.h2database:h2")
-	//Possible postgre support will be enabled like this
-	//compile("postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted");
 	
     testCompile("org.springframework.boot:spring-boot-starter-test")
 	testCompile("org.springframework.security:spring-security-test")
