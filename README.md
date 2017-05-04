@@ -1,11 +1,12 @@
 # Introduction
 
-This gradle multiproject demonstrates a very minimalistic REST API, access to which is controlled with OAuth 2.0. The project consists of two independent spring-boot applications which communicate over HTTP:
+This gradle multiproject demonstrates a very minimalistic REST API, access to which is controlled with OAuth 2.0 password grant. 
+This might be useful in cases in which the client collects the user name and the password of the resource owners. The project consists of two independent spring-boot applications which communicate over HTTP:
 
 * An authorization server - it generates and verifies authentication tokens for users that attempt to access a REST resource. The user data is stored in H2 database currently. This may be easily adopted to PostgreSQL, MySQL or other relational DB. The token storage is in-memory.
 * Resource server - serves REST resources protected by access tokens.
 
-The resource server verifies the access tokens received from the clients against the authorization server. To get started simply clone the project and read on.
+In the current setup the client may request its token from the authorization server. Then it may try to use the token at the resource server. The resource server verifies the access tokens received from the clients against the authorization server. To get started simply clone the project and read on.
 
 # Running
 
@@ -19,7 +20,9 @@ Navigate to the project root, e.g. `oauth2-passwordgrant-example` and execute `g
 * user `user2` with password `password2`, the user account is locked;
 * a trusted client with id `foo` which can access grant access to user data;
 
-The endpoint for retrieving access tokens via POST request is [http://localhost:8080/oauth/token](http://localhost:8080/oauth/token). 
+The endpoint for retrieving access tokens via POST request is [http://localhost:8080/oauth/token](http://localhost:8080/oauth/token). All access to the OAuth endpoints require basic authentication in which the password is empty and the client id is foo. This may sound strange at first but it is something in the Spring implementation details. For more information see [https://github.com/spring-projects/spring-security-oauth/issues/1058](here). The authentication header will look like this:
+
+`Authorization: Basic Zm9vOg==`
 
 ### Get an access token for user1
 
@@ -29,10 +32,14 @@ The following parameters should be supplied:
 grant_type=password
 username=user1
 password=password1
-client_id=foo
 ```
+The following HTTP header should be present:
 
-A sample response would be:
+`Authorization: Basic Zm9vOg==`
+
+The HTTP request is POST.
+
+A sample successful response would be:
 
 ```
 {
@@ -44,7 +51,7 @@ A sample response would be:
 }
 ```
 
-You may check the validity of the token at the following endpont: [http://localhost:8080/oauth/check_token](http://localhost:8080/oauth/check_token). A header with name `token` and value the token itself should be provided. A sample response would be:
+You may check the validity of the token at the following endpont: [http://localhost:8080/oauth/check_token](http://localhost:8080/oauth/check_token). A parameter with name `token` and value the token itself should be provided. Authorization header is required, like in the call above. The request is POST. A sample response would be:
 
 ```
 {
@@ -66,8 +73,13 @@ The following parameters should be supplied:
 grant_type=password
 username=user2
 password=password2
-client_id=foo
 ```
+
+The following HTTP header should be present:
+
+`Authorization: Basic Zm9vOg==`
+
+The HTTP request is POST.
 
 A sample response would be:
 
