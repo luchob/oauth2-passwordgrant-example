@@ -98,8 +98,13 @@ The following parameters may be supplied:
 grant_type=password
 username=luchob
 password=top_secret
-client_id=foo
 ```
+
+The following HTTP header should be present:
+
+`Authorization: Basic Zm9vOg==`
+
+The HTTP request is POST.
 
 A sample response would be:
 
