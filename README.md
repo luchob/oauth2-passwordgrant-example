@@ -20,7 +20,7 @@ Navigate to the project root, e.g. `oauth2-passwordgrant-example` and execute `g
 * user `user2` with password `password2`, the user account is locked;
 * a trusted client with id `foo` which can access grant access to user data;
 
-The endpoint for retrieving access tokens via POST request is [http://localhost:8080/oauth/token](http://localhost:8080/oauth/token). All access to the OAuth endpoints require basic authentication in which the password is empty and the client id is foo. This may sound strange at first but it is something in the Spring implementation details. For more information see [https://github.com/spring-projects/spring-security-oauth/issues/1058](here). The authentication header will look like this:
+The endpoint for retrieving access tokens via POST request is [http://localhost:8080/oauth/token](http://localhost:8080/oauth/token). All access to the OAuth endpoints require basic authentication in which the password is empty and the client id is foo. This may sound strange at first but it is something in the Spring implementation details. For more information see [here](https://github.com/spring-projects/spring-security-oauth/issues/1058). The authentication header will look like this:
 
 `Authorization: Basic Zm9vOg==`
 
@@ -152,11 +152,3 @@ The Eclipse plugin for gradle is enabled in the build. To import the projects in
 * Navigate to the project root, e.g. `springboot-oauth2-example`
 * Execute `gradlew eclipse`
 * Open your Eclipse IDE and import the projects as existing Java projects
-
-# Conclusion
-
-This implementation idea does not seem to be suitable for production environments because:
-
-* The end point for token generation should be protected with basic authentication which is not the case currently;
-* It seems that this leads to a situation in which the token check endpoint should be left unprotected. Currently I'm not sure if this is an issue or not;
-* RemoteTokenServices for checking the access tokens won't work with unprotected token check endpoint;
