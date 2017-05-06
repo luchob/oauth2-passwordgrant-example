@@ -29,16 +29,22 @@ public class TestDataLoader  implements ApplicationRunner {
 
     public void run(ApplicationArguments args) {
     	
-    	User user1 = new User(), user2 = new User();
+    	User user1 = new User(), user2 = new User(), user3 = new User();
     	
     	user1.setName("user1");
     	user1.setPasswordHash(new BCryptPasswordEncoder().encode("password1"));
     	user1.setAccountLocked(false);
+    	user1.setPermissions(Arrays.asList("ROLE_READ_BOOK"));
     	
     	user2.setName("user2");
     	user2.setPasswordHash(new BCryptPasswordEncoder().encode("password2"));
-    	user2.setAccountLocked(true);
+    	user2.setAccountLocked(false);
+    	user2.setPermissions(Arrays.asList("ROLE_READ_BOOK", "ROLE_WRITE_BOOK"));
     	
-        userRepository.save(Arrays.asList(user1, user2));
+    	user3.setName("user3");
+    	user3.setPasswordHash(new BCryptPasswordEncoder().encode("password3"));
+    	user3.setAccountLocked(true);
+    	
+        userRepository.save(Arrays.asList(user1, user2, user3));
     }
 }

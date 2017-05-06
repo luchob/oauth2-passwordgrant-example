@@ -2,7 +2,7 @@ clientdetails:
     clientId: foo
     clientSecret: ""
     authorizedGrantTypes: refresh_token, password
-    scope: read, write
+    scope: oauth
     accessTokenValiditySeconds: 1800
     
 logging:

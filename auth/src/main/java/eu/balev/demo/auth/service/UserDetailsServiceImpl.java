@@ -1,10 +1,12 @@
 package eu.balev.demo.auth.service;
 
-import java.util.Collections;
+import static java.util.stream.Collectors.toList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -46,6 +48,15 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
 				true, 
 				true, 
 				!user.isAccountLocked(), 
-				Collections.emptyList());
+				user.
+					getPermissions().
+					stream().
+					map(this::map).
+					collect(toList()));
+	}
+	
+	private GrantedAuthority map(String permission)
+	{
+		return new SimpleGrantedAuthority(permission);
 	}
 }
