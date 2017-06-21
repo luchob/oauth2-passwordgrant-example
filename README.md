@@ -2,7 +2,7 @@
 
 This is a small proof-of-concept project which consists of two apps:
 
-- Authentication service (AS) - it issues and verifies access tokens for clients.
+- Authorization service (AS) - it issues and verifies access tokens for clients.
 - Resource service (RS) - it exposes a small protected REST API for reading/writing of resources.
 
 The authentication schema follows the OAuth 2.0 protocol with password grant.
